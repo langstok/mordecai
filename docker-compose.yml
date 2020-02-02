@@ -1,0 +1,34 @@
+version: '2.2'
+services:
+  mordecai:
+    image: putssander/mordecai:latest
+#    build: .
+    volumes:
+      - .:/app
+    ports:
+      - "8080:8080"
+    environment:
+      - ES_HOSTS=elasticsearch-mordecai
+      - ES_PORT=9200
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - bootstrap.memory_lock=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - elastic
+  elasticsearch-elasticsearch-mordecai:
+    container_name: elasticsearch-mordecai
+    image: elasticsearch:5.6.15
+    ports:
+      - "127.0.0.1:9200:9200"
+      - "127.0.0.1:9300:9300"
+    volumes:
+      - '/Users/sanderputs/DataSets/geonames_index/:/usr/share/elasticsearch/data/'
+    networks:
+      - elastic
+
+networks:
+  elastic:
+    driver: bridge
